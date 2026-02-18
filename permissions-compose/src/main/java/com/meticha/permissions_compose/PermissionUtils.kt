@@ -7,13 +7,13 @@ import kotlin.collections.contains
 
 internal fun checkPermissionAddedInManifest(
     permission: AppPermission,
-    context: Context,
+    context: Context
 ): Boolean =
     try {
         val packageInfo =
             context.packageManager.getPackageInfo(
                 context.packageName,
-                PackageManager.GET_PERMISSIONS,
+                PackageManager.GET_PERMISSIONS
             )
         val declaredPermissions = packageInfo.requestedPermissions ?: emptyArray()
         declaredPermissions.contains(permission.permission)
@@ -23,7 +23,7 @@ internal fun checkPermissionAddedInManifest(
     }
 
 class PermissionNotAddedException(
-    private val permission: String,
+    private val permission: String
 ) : Exception() {
     override val message: String
         get() = "You forgot to add $permission permission in the manifest"

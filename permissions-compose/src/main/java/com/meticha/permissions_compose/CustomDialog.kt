@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 typealias CustomRationaleUI = @Composable (
     permission: AppPermission,
     onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
+    onConfirm: () -> Unit
 ) -> Unit
 
 /**
@@ -17,7 +17,7 @@ typealias CustomRationaleUI = @Composable (
 typealias CustomSettingsUI = @Composable (
     permission: AppPermission,
     onDismiss: () -> Unit,
-    onConfirm: () -> Unit,
+    onConfirm: () -> Unit
 ) -> Unit
 
 /**

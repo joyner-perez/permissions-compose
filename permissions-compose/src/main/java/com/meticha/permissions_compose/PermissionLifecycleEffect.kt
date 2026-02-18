@@ -5,7 +5,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.compose.LocalLifecycleOwner
 
 /**
@@ -14,7 +13,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 @Composable
 fun PermissionLifeCycleCheckEffect(
     permissionState: PermissionState,
-    lifecycleEvent: Lifecycle.Event = Lifecycle.Event.ON_RESUME,
+    lifecycleEvent: Lifecycle.Event = Lifecycle.Event.ON_RESUME
 ) {
     val observer =
         LifecycleEventObserver { _, event ->

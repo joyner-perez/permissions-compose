@@ -43,13 +43,13 @@ fun rememberAppPermissionState(permissions: List<AppPermission>): PermissionStat
 
     // Handle lifecycle events
     PermissionLifeCycleCheckEffect(
-        permissionState = permissionState,
+        permissionState = permissionState
     )
 
     // Set up permission launcher
     permissionState.launcher =
         rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.RequestPermission(),
+            contract = ActivityResultContracts.RequestPermission()
         ) { isGranted ->
             when {
                 isGranted -> {
@@ -74,7 +74,7 @@ fun rememberAppPermissionState(permissions: List<AppPermission>): PermissionStat
                         {
                             permissionState.showRationalePopUp = false
                             permissionState.requestPermission()
-                        },
+                        }
                     )
                 } else {
                     ShowPopup(
@@ -82,7 +82,7 @@ fun rememberAppPermissionState(permissions: List<AppPermission>): PermissionStat
                         onConfirm = {
                             permissionState.showRationalePopUp = false
                             permissionState.requestPermission()
-                        },
+                        }
                     )
                 }
             }
@@ -96,7 +96,7 @@ fun rememberAppPermissionState(permissions: List<AppPermission>): PermissionStat
                             permissionState.showSettingsPopUp = false
                             permissionState.resumedFromSettings = true
                             openAppSettings(context)
-                        },
+                        }
                     )
                 } else {
                     ShowSettings(
@@ -105,7 +105,7 @@ fun rememberAppPermissionState(permissions: List<AppPermission>): PermissionStat
                             permissionState.showSettingsPopUp = false
                             permissionState.resumedFromSettings = true
                             openAppSettings(context)
-                        },
+                        }
                     )
                 }
             }
@@ -120,14 +120,14 @@ fun rememberAppPermissionState(permissions: List<AppPermission>): PermissionStat
  */
 private fun handlePermissionDenial(
     permissionState: PermissionState,
-    activity: Activity,
+    activity: Activity
 ) {
     permissionState.currentPermission?.let { currentPermission ->
         when {
             currentPermission.isRequired &&
                 ActivityCompat.shouldShowRequestPermissionRationale(
                     activity,
-                    currentPermission.permission,
+                    currentPermission.permission
                 ) -> {
                 permissionState.showRationalePopUp = true
             }
@@ -158,7 +158,7 @@ private fun openAppSettings(context: Context) {
  * Manages the state of permission requests and their UI flows
  */
 class PermissionState(
-    permissionList: List<AppPermission>,
+    permissionList: List<AppPermission>
 ) {
     // WeakReference to context to avoid memory leaks
     lateinit var contextRef: WeakReference<Context>
