@@ -1,6 +1,5 @@
 package com.meticha.permissions_compose
 
-
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -9,7 +8,7 @@ import androidx.compose.runtime.Composable
 @Composable
 fun ShowSettings(
     message: String,
-    onConfirm: () -> Unit
+    onConfirm: () -> Unit,
 ) {
     AlertDialog(
         onDismissRequest = {},
@@ -25,14 +24,14 @@ fun ShowSettings(
             }) {
                 Text(text = "OK")
             }
-        }
+        },
     )
 }
 
 @Composable
 fun ShowPopup(
     message: String,
-    onConfirm: () -> Unit
+    onConfirm: () -> Unit,
 ) {
     AlertDialog(
         onDismissRequest = { },
@@ -48,6 +47,6 @@ fun ShowPopup(
             }) {
                 Text(text = "OK")
             }
-        }
+        },
     )
 }
