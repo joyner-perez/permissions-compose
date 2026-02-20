@@ -5,4 +5,3 @@ data class AppPermission(
     val description: String,
     val isRequired: Boolean
 )
-

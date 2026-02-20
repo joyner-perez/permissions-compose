@@ -3,7 +3,7 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.compose)
-    id("com.vanniktech.maven.publish") version "0.36.0"
+    id("com.vanniktech.maven.publish") version libs.versions.mavenPublishPlugin.get()
 }
 
 android {
@@ -21,8 +21,8 @@ android {
         release {
             isMinifyEnabled = false
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                getDefaultProguardFile(name = "proguard-android-optimize.txt"),
+                "proguard-rules.pro",
             )
         }
     }
@@ -58,14 +58,14 @@ mavenPublishing {
     publishToMavenCentral()
     signAllPublications()
 
-    coordinates("com.meticha", "permissions_compose", "1.0.5")
+    coordinates(groupId = "com.meticha", artifactId = "permissions_compose", version = libs.versions.permissionsCompose.get())
 
     pom {
         name = "permissions_compose"
         description =
             "A lightweight Android library that simplifies runtime permission management in Jetpack Compose applications."
         inceptionYear = "2025"
-        version = "1.0.5"
+        version = libs.versions.permissionsCompose.get()
         url = "https://github.com/meticha/permissions-compose.git"
         licenses {
             license {
@@ -88,4 +88,3 @@ mavenPublishing {
         }
     }
 }
-

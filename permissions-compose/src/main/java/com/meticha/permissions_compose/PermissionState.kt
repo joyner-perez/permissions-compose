@@ -1,6 +1,5 @@
 package com.meticha.permissions_compose
 
-
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
@@ -22,14 +21,13 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.core.app.ActivityCompat
 import java.lang.ref.WeakReference
 
-
 @SuppressLint("ComposableNaming")
 @Composable
 fun rememberAppPermissionState(permissions: List<AppPermission>): PermissionState {
     val context = LocalContext.current
     val activity = requireNotNull(LocalActivity.current)
 
-    val permissionState = remember(permissions) { PermissionState(permissions) }
+    val permissionState = remember(key1 = permissions) { PermissionState(permissionList = permissions) }
 
     // Provide context access through composable scope
     permissionState.contextRef = WeakReference(context)
@@ -38,7 +36,7 @@ fun rememberAppPermissionState(permissions: List<AppPermission>): PermissionStat
      * Check if the permissions are added in the manifest file
      */
     permissions.forEach {
-        if (!checkPermissionAddedInManifest(it, context)) {
+        if (!checkPermissionAddedInManifest(permission = it, context)) {
             throw PermissionNotAddedException(it.permission)
         }
     }
@@ -49,18 +47,21 @@ fun rememberAppPermissionState(permissions: List<AppPermission>): PermissionStat
     )
 
     // Set up permission launcher
-    permissionState.launcher = rememberLauncherForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) { isGranted ->
-        when {
-            isGranted -> {
-                permissionState.next()
-                permissionState.allRequiredGranted()
-            }
+    permissionState.launcher =
+        rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.RequestPermission()
+        ) { isGranted ->
+            when {
+                isGranted -> {
+                    permissionState.next()
+                    permissionState.allRequiredGranted()
+                }
 
-            else -> handlePermissionDenial(permissionState, activity)
+                else -> {
+                    handlePermissionDenial(permissionState, activity)
+                }
+            }
         }
-    }
 
     // Display permission rationale popup if needed
     permissionState.currentPermission?.let { permission ->
@@ -75,7 +76,6 @@ fun rememberAppPermissionState(permissions: List<AppPermission>): PermissionStat
                             permissionState.requestPermission()
                         }
                     )
-
                 } else {
                     ShowPopup(
                         message = permission.description,
@@ -98,7 +98,6 @@ fun rememberAppPermissionState(permissions: List<AppPermission>): PermissionStat
                             openAppSettings(context)
                         }
                     )
-
                 } else {
                     ShowSettings(
                         message = permission.description,
@@ -116,25 +115,30 @@ fun rememberAppPermissionState(permissions: List<AppPermission>): PermissionStat
     return permissionState
 }
 
-
 /**
  * Handles permission denial, showing appropriate UI based on denial context
  */
-private fun handlePermissionDenial(permissionState: PermissionState, activity: Activity) {
+private fun handlePermissionDenial(
+    permissionState: PermissionState,
+    activity: Activity
+) {
     permissionState.currentPermission?.let { currentPermission ->
         when {
             currentPermission.isRequired &&
-                    ActivityCompat.shouldShowRequestPermissionRationale(
-                        activity,
-                        currentPermission.permission
-                    ) ->
+                ActivityCompat.shouldShowRequestPermissionRationale(
+                    activity,
+                    currentPermission.permission
+                ) -> {
                 permissionState.showRationalePopUp = true
+            }
 
-            currentPermission.isRequired ->
+            currentPermission.isRequired -> {
                 permissionState.showSettingsPopUp = true
+            }
 
-            else ->
+            else -> {
                 permissionState.next()
+            }
         }
     }
 }
@@ -154,7 +158,7 @@ private fun openAppSettings(context: Context) {
  * Manages the state of permission requests and their UI flows
  */
 class PermissionState(
-    permissionList: List<AppPermission>,
+    permissionList: List<AppPermission>
 ) {
     // WeakReference to context to avoid memory leaks
     lateinit var contextRef: WeakReference<Context>
@@ -166,31 +170,32 @@ class PermissionState(
     private var pendingPermissions = mutableStateListOf<AppPermission>()
 
     // Currently processing permission
-    internal var currentPermission by mutableStateOf<AppPermission?>(null)
+    internal var currentPermission by mutableStateOf<AppPermission?>(value = null)
 
     // UI state
-    internal var showRationalePopUp by mutableStateOf(false)
-    internal var showSettingsPopUp by mutableStateOf(false)
-    internal var resumedFromSettings by mutableStateOf(false)
+    internal var showRationalePopUp by mutableStateOf(value = false)
+    internal var showSettingsPopUp by mutableStateOf(value = false)
+    internal var resumedFromSettings by mutableStateOf(value = false)
 
     // Permission states
-    private var isRequiredPermissionGranted by mutableStateOf(false)
+    private var isRequiredPermissionGranted by mutableStateOf(value = false)
 
     // Permission request launcher
     internal var launcher: ManagedActivityResultLauncher<String, Boolean>? = null
 
     init {
-        allPermissions.addAll(permissionList)
-        pendingPermissions.addAll(permissionList)
+        allPermissions.addAll(elements = permissionList)
+        pendingPermissions.addAll(elements = permissionList)
     }
 
     /**
      * Checks if all required permissions are actually granted
      */
     fun allRequiredGranted(): Boolean {
-        isRequiredPermissionGranted = allPermissions
-            .filter { it.isRequired }
-            .all { isGranted(it.permission) }
+        isRequiredPermissionGranted =
+            allPermissions
+                .filter { it.isRequired }
+                .all { isGranted(it.permission) }
         return isRequiredPermissionGranted
     }
 
@@ -212,7 +217,7 @@ class PermissionState(
                 if (isGranted(permission.permission)) {
                     next() // Permission already granted, move to next
                 } else {
-                    launcher?.launch(permission.permission)
+                    launcher?.launch(input = permission.permission)
                 }
             }
         }
@@ -223,7 +228,7 @@ class PermissionState(
      */
     internal fun next() {
         if (pendingPermissions.isNotEmpty()) {
-            pendingPermissions.removeAt(0)
+            pendingPermissions.removeAt(index = 0)
         }
         requestPermission()
     }

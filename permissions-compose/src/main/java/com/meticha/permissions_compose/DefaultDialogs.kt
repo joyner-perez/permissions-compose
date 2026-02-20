@@ -1,6 +1,5 @@
 package com.meticha.permissions_compose
 
-
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text

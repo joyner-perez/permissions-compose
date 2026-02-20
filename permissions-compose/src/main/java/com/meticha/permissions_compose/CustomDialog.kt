@@ -54,7 +54,3 @@ object PermissionManagerConfig {
         _customSettingsUI = null
     }
 }
-
-
-
-
